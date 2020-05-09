@@ -38,9 +38,20 @@ namespace myTiles {
 . . . . . . . . . . . . . . . . 
 `
 }
-scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.darkGroundNorth, function (sprite, location) {
-    sprite.vy = 0
-    tiles.placeOnRandomTile(sprite, sprites.builtin.forestTiles0)
+controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
+    projectile = sprites.createProjectileFromSprite(img`
+. . 8 8 8 8 . . 
+. 8 5 5 5 5 8 . 
+8 5 . . . . 5 8 
+8 5 . . . . 5 8 
+8 5 . . . . 5 8 
+8 5 . . . . 5 8 
+. 8 5 5 5 5 8 . 
+. . 8 8 8 8 . . 
+`, blueGuy, 50, 0)
+    if (blueGuy.image == blueGuyleftimage) {
+    	
+    }
 })
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     if (blueJumpCount <= 1) {
@@ -48,7 +59,13 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
         blueJumpCount += 1
     }
 })
+scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.darkGroundNorth, function (sprite, location) {
+    sprite.vy = 0
+    tiles.placeOnRandomTile(sprite, sprites.builtin.forestTiles0)
+})
+let projectile: Sprite = null
 let blueGuy: Sprite = null
+let blueGuyleftimage: Image = null
 let blueJumpCount = 0
 let JUMPSPEED = 0
 let GRAVITY = 250
@@ -73,7 +90,7 @@ tiles.setTilemap(tiles.createTilemap(
             [myTiles.tile0,myTiles.tile1,sprites.builtin.crowd3,sprites.builtin.brick,sprites.dungeon.darkGroundNorth,sprites.builtin.forestTiles0],
             TileScale.Sixteen
         ))
-let blueGuyleftimage = img`
+blueGuyleftimage = img`
 . . . . f f f f f . . . . . . . 
 . . . f 8 8 8 8 8 f . . . . . . 
 . . f d d d d 8 8 8 f . . . . . 
@@ -122,7 +139,9 @@ game.onUpdate(function () {
 game.onUpdate(function () {
     if (blueGuy.vx < 0) {
         blueGuy.setImage(blueGuyleftimage)
-    } else {
+    } else if (blueGuy.vx > 0) {
         blueGuy.setImage(blueGuy_right_image)
+    } else {
+    	
     }
 })
