@@ -63,15 +63,15 @@ controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
 `, blueGuy, -1 * RING_VX, 0)
     }
 })
+scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.darkGroundNorth, function (sprite, location) {
+    sprite.vy = 0
+    tiles.placeOnRandomTile(sprite, sprites.builtin.forestTiles0)
+})
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     if (blueJumpCount <= 1) {
         blueGuy.vy = JUMPSPEED
         blueJumpCount += 1
     }
-})
-scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.darkGroundNorth, function (sprite, location) {
-    sprite.vy = 0
-    tiles.placeOnRandomTile(sprite, sprites.builtin.forestTiles0)
 })
 let projectile: Sprite = null
 let blueGuy: Sprite = null
