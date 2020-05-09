@@ -39,7 +39,8 @@ namespace myTiles {
 `
 }
 controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
-    projectile = sprites.createProjectileFromSprite(img`
+    if (blueGuy.image == blueGuy_right_image) {
+        projectile = sprites.createProjectileFromSprite(img`
 . . 8 8 8 8 . . 
 . 8 5 5 5 5 8 . 
 8 5 . . . . 5 8 
@@ -48,9 +49,18 @@ controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
 8 5 . . . . 5 8 
 . 8 5 5 5 5 8 . 
 . . 8 8 8 8 . . 
-`, blueGuy, 50, 0)
-    if (blueGuy.image == blueGuyleftimage) {
-    	
+`, blueGuy, RING_VX, 0)
+    } else {
+        projectile = sprites.createProjectileFromSprite(img`
+. . 8 8 8 8 . . 
+. 8 5 5 5 5 8 . 
+8 5 . . . . 5 8 
+8 5 . . . . 5 8 
+8 5 . . . . 5 8 
+8 5 . . . . 5 8 
+. 8 5 5 5 5 8 . 
+. . 8 8 8 8 . . 
+`, blueGuy, -1 * RING_VX, 0)
     }
 })
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
@@ -65,9 +75,11 @@ scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.darkGroundNorth, function
 })
 let projectile: Sprite = null
 let blueGuy: Sprite = null
-let blueGuyleftimage: Image = null
+let blueGuy_right_image: Image = null
 let blueJumpCount = 0
 let JUMPSPEED = 0
+let RING_VX = 0
+RING_VX = 50
 let GRAVITY = 250
 JUMPSPEED = -120
 blueJumpCount = 2
@@ -90,7 +102,7 @@ tiles.setTilemap(tiles.createTilemap(
             [myTiles.tile0,myTiles.tile1,sprites.builtin.crowd3,sprites.builtin.brick,sprites.dungeon.darkGroundNorth,sprites.builtin.forestTiles0],
             TileScale.Sixteen
         ))
-blueGuyleftimage = img`
+let blueGuyleftimage = img`
 . . . . f f f f f . . . . . . . 
 . . . f 8 8 8 8 8 f . . . . . . 
 . . f d d d d 8 8 8 f . . . . . 
@@ -108,7 +120,7 @@ c c c c c d d d 8 8 f c . f 8 f
 . . . f d d c d d b b d f . . . 
 . . . . f f f f f f f f f . . . 
 `
-let blueGuy_right_image = blueGuyleftimage.clone()
+blueGuy_right_image = blueGuyleftimage.clone()
 blueGuy_right_image.flipX()
 blueGuy = sprites.create(img`
 . . . . f f f f f . . . . . . . 
@@ -141,7 +153,5 @@ game.onUpdate(function () {
         blueGuy.setImage(blueGuyleftimage)
     } else if (blueGuy.vx > 0) {
         blueGuy.setImage(blueGuy_right_image)
-    } else {
-    	
     }
 })
