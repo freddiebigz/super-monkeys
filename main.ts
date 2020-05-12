@@ -63,14 +63,41 @@ controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
 `, blueGuy, -1 * RING_VX, 0)
     }
 })
-scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.darkGroundNorth, function (sprite, location) {
-    sprite.vy = 0
-    tiles.placeOnRandomTile(sprite, sprites.builtin.forestTiles0)
+controller.player2.onButtonEvent(ControllerButton.A, ControllerButtonEvent.Pressed, function () {
+    if (redJumpCount <= 1) {
+        redGuy.vy = JUMPSPEED
+        redJumpCount += 1
+    }
 })
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     if (blueJumpCount <= 1) {
         blueGuy.vy = JUMPSPEED
         blueJumpCount += 1
+    }
+})
+controller.player2.onButtonEvent(ControllerButton.B, ControllerButtonEvent.Pressed, function () {
+    if (redGuy.image == redGuyrightimage) {
+        projectile = sprites.createProjectileFromSprite(img`
+. . 2 2 2 2 . . 
+. 2 5 5 5 5 2 . 
+2 5 . . . . 5 2 
+2 5 . . . . 5 2 
+2 5 . . . . 5 2 
+2 5 . . . . 5 2 
+. 2 5 5 5 5 2 . 
+. . 2 2 2 2 . . 
+`, redGuy, RING_VX, 0)
+    } else {
+        projectile = sprites.createProjectileFromSprite(img`
+. . 2 2 2 2 . . 
+. 2 5 5 5 5 2 . 
+2 5 . . . . 5 2 
+2 5 . . . . 5 2 
+2 5 . . . . 5 2 
+2 5 . . . . 5 2 
+. 2 5 5 5 5 2 . 
+. . 2 2 2 2 . . 
+`, redGuy, -1 * RING_VX, 0)
     }
 })
 function createBlueGuy () {
@@ -115,6 +142,10 @@ c c c c c d d d 8 8 f c . f 8 f
     controller.moveSprite(blueGuy, 100, 0)
     blueGuy.ay = GRAVITY
 }
+scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.darkGroundNorth, function (sprite, location) {
+    sprite.vy = 0
+    tiles.placeOnRandomTile(sprite, sprites.builtin.forestTiles0)
+})
 function createRedGuy () {
     redGuyleftimage = img`
 . . . . f f f f f . . . . . . . 
@@ -154,17 +185,18 @@ c c c c c d d d 2 2 f c . f 2 f
 . . . f d d c d d b b d f . . . 
 . . . . f f f f f f f f f . . . 
 `, SpriteKind.Player)
-    controller.moveSprite(redGuy, 100, 0)
     redGuy.ay = GRAVITY
     redGuy.setPosition(23, 16)
+    controller.player2.moveSprite(redGuy, 100, 0)
 }
-let redGuy: Sprite = null
-let redGuyrightimage: Image = null
 let redGuyleftimage: Image = null
 let blueGuyleftimage: Image = null
+let redGuyrightimage: Image = null
+let redGuy: Sprite = null
 let projectile: Sprite = null
 let blueGuy_right_image: Image = null
 let blueGuy: Sprite = null
+let redJumpCount = 0
 let blueJumpCount = 0
 let JUMPSPEED = 0
 let GRAVITY = 0
@@ -173,7 +205,7 @@ RING_VX = 50
 GRAVITY = 250
 JUMPSPEED = -120
 blueJumpCount = 2
-let redJumpCount = 0
+redJumpCount = 0
 scene.setBackgroundColor(9)
 tiles.setTilemap(tiles.createTilemap(
             hex`0a000b000005000000000000050000000000000000000000000000000000000000000000000000000000000000000303000003030000000000000000000000000000000000000000000000000303030303030000000300000000000003000000000000000000000004040404040404040404`,
@@ -218,5 +250,12 @@ game.onUpdate(function () {
         blueGuy.setImage(blueGuyleftimage)
     } else if (blueGuy.vx > 0) {
         blueGuy.setImage(blueGuy_right_image)
+    }
+})
+game.onUpdate(function () {
+    if (redGuy.vx < 0) {
+        redGuy.setImage(redGuyleftimage)
+    } else if (redGuy.vx > 0) {
+        redGuy.setImage(redGuyrightimage)
     }
 })
