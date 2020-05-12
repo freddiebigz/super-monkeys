@@ -208,7 +208,7 @@ blueJumpCount = 2
 redJumpCount = 0
 scene.setBackgroundColor(9)
 tiles.setTilemap(tiles.createTilemap(
-            hex`0a000b000005000000000000050000000000000000000000000000000000000000000000000000000000000000000303000003030000000000000000000000000000000000000000000000000303030303030000000300000000000003000000000000000000000004040404040404040404`,
+            hex`0a000b000005000000000000050000000000000000000000000000000000000000000000000000000000000000000303000003030000000000000000000000000000000000000000000000000303030303030000000300000000000003000606060606060606060600000000000000000000`,
             img`
 . . . . . . . . . . 
 . . . . . . . . . . 
@@ -222,7 +222,7 @@ tiles.setTilemap(tiles.createTilemap(
 . . . . . . . . . . 
 . . . . . . . . . . 
 `,
-            [myTiles.tile0,myTiles.tile1,sprites.builtin.crowd3,sprites.builtin.brick,sprites.dungeon.darkGroundNorth,sprites.builtin.forestTiles0],
+            [myTiles.tile0,myTiles.tile1,sprites.builtin.crowd3,sprites.builtin.brick,sprites.dungeon.darkGroundNorth,sprites.builtin.forestTiles0,sprites.dungeon.hazardLava0],
             TileScale.Sixteen
         ))
 scene.centerCameraAt(80, 98)
