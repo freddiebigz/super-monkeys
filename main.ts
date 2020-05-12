@@ -1,3 +1,8 @@
+namespace SpriteKind {
+    export const redprojectile = SpriteKind.create()
+    export const blueGuy = SpriteKind.create()
+    export const blueProjectile = SpriteKind.create()
+}
 namespace myTiles {
     //% blockIdentity=images._tile
     export const tile0 = img`
@@ -62,6 +67,7 @@ controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
 . . 8 8 8 8 . . 
 `, blueGuy, -1 * RING_VX, 0)
     }
+    projectile.setKind(SpriteKind.blueProjectile)
 })
 controller.player2.onButtonEvent(ControllerButton.A, ControllerButtonEvent.Pressed, function () {
     if (redJumpCount <= 1) {
@@ -69,11 +75,20 @@ controller.player2.onButtonEvent(ControllerButton.A, ControllerButtonEvent.Press
         redJumpCount += 1
     }
 })
+sprites.onOverlap(SpriteKind.redprojectile, SpriteKind.Player, function (sprite, otherSprite) {
+    if (otherSprite == blueGuy) {
+        info.player1.changeLifeBy(-1)
+    }
+})
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     if (blueJumpCount <= 1) {
         blueGuy.vy = JUMPSPEED
         blueJumpCount += 1
     }
+})
+scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.hazardLava0, function (sprite, location) {
+    sprite.vy = 0
+    tiles.placeOnRandomTile(sprite, sprites.builtin.forestTiles0)
 })
 controller.player2.onButtonEvent(ControllerButton.B, ControllerButtonEvent.Pressed, function () {
     if (redGuy.image == redGuyrightimage) {
@@ -99,6 +114,7 @@ controller.player2.onButtonEvent(ControllerButton.B, ControllerButtonEvent.Press
 . . 2 2 2 2 . . 
 `, redGuy, -1 * RING_VX, 0)
     }
+    projectile.setKind(SpriteKind.redprojectile)
 })
 function createBlueGuy () {
     blueGuyleftimage = img`
@@ -142,10 +158,6 @@ c c c c c d d d 8 8 f c . f 8 f
     controller.moveSprite(blueGuy, 100, 0)
     blueGuy.ay = GRAVITY
 }
-scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.darkGroundNorth, function (sprite, location) {
-    sprite.vy = 0
-    tiles.placeOnRandomTile(sprite, sprites.builtin.forestTiles0)
-})
 function createRedGuy () {
     redGuyleftimage = img`
 . . . . f f f f f . . . . . . . 
@@ -189,6 +201,11 @@ c c c c c d d d 2 2 f c . f 2 f
     redGuy.setPosition(23, 16)
     controller.player2.moveSprite(redGuy, 100, 0)
 }
+sprites.onOverlap(SpriteKind.blueProjectile, SpriteKind.Player, function (sprite, otherSprite) {
+    if (otherSprite == redGuy) {
+        info.player2.changeLifeBy(-1)
+    }
+})
 let redGuyleftimage: Image = null
 let blueGuyleftimage: Image = null
 let redGuyrightimage: Image = null
