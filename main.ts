@@ -54,7 +54,7 @@ controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
 8 5 . . . . 5 8 
 . 8 5 5 5 5 8 . 
 . . 8 8 8 8 . . 
-`, blueGuy, RING_VX, 0)
+`, blueGuy, RING_VX, 100)
     } else {
         projectile = sprites.createProjectileFromSprite(img`
 . . 8 8 8 8 . . 
@@ -75,9 +75,14 @@ controller.player2.onButtonEvent(ControllerButton.A, ControllerButtonEvent.Press
         redJumpCount += 1
     }
 })
+info.player2.onLifeZero(function () {
+    game.splash("redGuy", "win")
+    game.over(true)
+})
 sprites.onOverlap(SpriteKind.redprojectile, SpriteKind.Player, function (sprite, otherSprite) {
     if (otherSprite == blueGuy) {
-        info.player1.changeLifeBy(-1)
+        info.player2.changeLifeBy(-1)
+        sprite.destroy()
     }
 })
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
@@ -89,6 +94,11 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
 scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.hazardLava0, function (sprite, location) {
     sprite.vy = 0
     tiles.placeOnRandomTile(sprite, sprites.builtin.forestTiles0)
+    if (sprite == redGuy) {
+        info.changeLifeBy(-1)
+    } else {
+        info.player2.changeLifeBy(-1)
+    }
 })
 controller.player2.onButtonEvent(ControllerButton.B, ControllerButtonEvent.Pressed, function () {
     if (redGuy.image == redGuyrightimage) {
@@ -156,7 +166,9 @@ c c c c c d d d 8 8 f c . f 8 f
 . . . . f f f f f f f f f . . . 
 `, SpriteKind.Player)
     controller.moveSprite(blueGuy, 100, 0)
+    blueGuy.setPosition(136, 16)
     blueGuy.ay = GRAVITY
+    info.setLife(10)
 }
 function createRedGuy () {
     redGuyleftimage = img`
@@ -200,11 +212,17 @@ c c c c c d d d 2 2 f c . f 2 f
     redGuy.ay = GRAVITY
     redGuy.setPosition(23, 16)
     controller.player2.moveSprite(redGuy, 100, 0)
+    info.player2.setLife(10)
 }
 sprites.onOverlap(SpriteKind.blueProjectile, SpriteKind.Player, function (sprite, otherSprite) {
     if (otherSprite == redGuy) {
-        info.player2.changeLifeBy(-1)
+        info.player1.changeLifeBy(-1)
+        sprite.destroy()
     }
+})
+info.onLifeZero(function () {
+    game.splash("blueGuy", "win")
+    game.over(true)
 })
 let redGuyleftimage: Image = null
 let blueGuyleftimage: Image = null
@@ -218,7 +236,7 @@ let blueJumpCount = 0
 let JUMPSPEED = 0
 let GRAVITY = 0
 let RING_VX = 0
-RING_VX = 50
+RING_VX = 120
 GRAVITY = 250
 JUMPSPEED = -120
 blueJumpCount = 2
@@ -260,13 +278,6 @@ game.onUpdate(function () {
 game.onUpdate(function () {
     if (redGuy.isHittingTile(CollisionDirection.Bottom)) {
         redJumpCount = 0
-    }
-})
-game.onUpdate(function () {
-    if (blueGuy.vx < 0) {
-        blueGuy.setImage(blueGuyleftimage)
-    } else if (blueGuy.vx > 0) {
-        blueGuy.setImage(blueGuy_right_image)
     }
 })
 game.onUpdate(function () {
